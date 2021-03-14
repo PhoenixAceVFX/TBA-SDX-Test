@@ -23,7 +23,7 @@ public class FindWrongScripts : EditorWindow
 	Vector2 MainScroll=Vector2.zero;
 	public List<bool> GUIList_Bool=new List<bool>();
 
-	[MenuItem("Phoenix/Bunny/FindWrongScripts")]
+	[MenuItem("Phoenix/Utilities/FindWrongScripts")]
 	static void Init()
 	{
 		FindWrongScripts window=(FindWrongScripts)EditorWindow.GetWindow(typeof(FindWrongScripts));

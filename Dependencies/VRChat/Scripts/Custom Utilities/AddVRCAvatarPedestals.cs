@@ -320,7 +320,7 @@ public class AddVRCAvatarPedestals : EditorWindow
 	public bool bUseFullSearch;
 	Vector2 MainScroll=Vector2.zero;
 
-	[MenuItem("Phoenix/Bunny/AddVRCAvatarPedestals")]
+	[MenuItem("Phoenix/Utilities/AddVRCAvatarPedestals")]
 	static void Init()
 	{
 		AddVRCAvatarPedestals window=(AddVRCAvatarPedestals)EditorWindow.GetWindow(typeof(AddVRCAvatarPedestals));

@@ -16,18 +16,18 @@ using VRC.Core;
 using VRCSDK2;
 
 #if UNITY_EDITOR
-public class CopyComponents : EditorWindow
+public class FindMaterial : EditorWindow
 {
-	public GameObject SelectedObject,CopyFromObject;
+	public GameObject SelectedObject;
+	public string MaterialName="";
 	public string CustomMessage="";
 	Vector2 MainScroll=Vector2.zero;
 	public List<bool> GUIList_Bool=new List<bool>();
-	public bool bSkipMissingGameObjects=false;
 
-	[MenuItem("Phoenix/Bunny/CopyComponents")]
+	[MenuItem("Phoenix/Utilities/FindMaterial")]
 	static void Init()
 	{
-		CopyComponents window=(CopyComponents)EditorWindow.GetWindow(typeof(CopyComponents));
+		FindMaterial window=(FindMaterial)EditorWindow.GetWindow(typeof(FindMaterial));
 		window.Show();
 	}
 
@@ -194,47 +194,6 @@ public class CopyComponents : EditorWindow
 		}
 
 		return Text=Text+Input;
-	}
-
-	public List<string> Split(string Text, string TextB)
-	{
-		List<string> S2 = new List<string>();
-
-		if (Text == "" || TextB == "")
-		{
-			S2.Add(Text);
-			return S2;
-		}
-
-		int i = 0;
-		int l = 0;
-		int m = 0;
-
-		while (i < Len(Text))
-		{
-			if (Text[i] == TextB[l])
-			{
-				if (l == Len(TextB) - 1)
-				{
-					S2.Add(Mid(Text, m, i - l - m));
-					m = i + 1;
-					l = 0;
-				}
-				else
-				{
-					l++;
-				}
-			}
-			else
-			{
-				l = 0;
-			}
-
-			i++;
-		}
-
-		S2.Add(Mid(Text, m));
-		return S2;
 	}
 
 	public void GetListOfMessages(string S, string DividerSymbol, out List<string> ListS)
@@ -458,68 +417,15 @@ public class CopyComponents : EditorWindow
 		return Result;
 	}
 
-	public Transform FindIn(GameObject GO, string S)
-	{
-		return FindIn(GO.transform, S);
-	}
-
-	public Transform FindIn(Transform T, string S)
-	{
-		List<string> S2 = Split(S, "/");
-		Transform T2 = FindIn(T, S2);
-		S2.Clear();
-		return T2;
-	}
-
-	public Transform FindIn(Transform T, List<string> S)
-	{
-		if (!T || S.Count == 0)
-		{
-			return null;
-		}
-
-		Transform T2 = null;
-
-		if (!string.IsNullOrEmpty(S[0]))
-		{
-			for (int i = 0; i < T.childCount; i++)
-			{
-				Transform T3 = T.GetChild(i);
-
-				if (T3.name == S[0])
-				{
-					T2 = T3;
-					break;
-				}
-			}
-		}
-
-		if (S.Count == 1)
-		{
-			return T2;
-		}
-
-		S.RemoveAt(0);
-		Transform T4 = FindIn(T2, S);
-		S.Clear();
-		return T4;
-	}
-
 	public void OnGUI()
 	{
 		MainScroll=EditorGUILayout.BeginScrollView(MainScroll);
 		SelectedObject=(GameObject)EditorGUILayout.ObjectField("Object", SelectedObject, typeof(GameObject), true);
-		CopyFromObject=(GameObject)EditorGUILayout.ObjectField("Copy From", CopyFromObject, typeof(GameObject), true);
-		bSkipMissingGameObjects=EditorGUILayout.Toggle("Skip Missing GameObjects", bSkipMissingGameObjects);
+		MaterialName=EditorGUILayout.TextField("Material Name", MaterialName);
 
-		if(GUILayout.Button("Copy Missing Components"))
+		if(GUILayout.Button("Find Material"))
 		{
-			CopyMissingComponents(SelectedObject,CopyFromObject);
-		}
-
-		if(GUILayout.Button("Find Missing Components"))
-		{
-			FindMissingComponents(SelectedObject,CopyFromObject);
+			FindMaterialInGO(SelectedObject);
 		}
 
 		if(CustomMessage!="")
@@ -530,7 +436,7 @@ public class CopyComponents : EditorWindow
 		EditorGUILayout.EndScrollView();
 	}
 
-	public bool CopyMissingComponents(GameObject GO, GameObject GO2)
+	public bool FindMaterialInGO(GameObject GO)
 	{
 		if(!GO)
 		{
@@ -538,129 +444,36 @@ public class CopyComponents : EditorWindow
 			return false;
 		}
 
-		if(!GO2)
-		{
-			CustomMessage="GameObject2 Is Null!";
-			return false;
-		}
-
 		CustomMessage="";
-		List<GameObject> GO3=FindGameObjects(GO2);
+		List<GameObject> GO2=FindGameObjects(GO);
 
-		foreach(GameObject GO4 in GO3)
+		foreach(GameObject GO3 in GO2)
 		{
-			string S=GetFullPathToObject(GO4,GO2);
-			Transform T=FindIn(GO,S);
+			Renderer[] renderers = GO3.GetComponents<Renderer>();
 
-			if(!T)
+			for (int i = 0; i < renderers.Length; i++)
 			{
-				if(!bSkipMissingGameObjects)
+				if (renderers[i] != null)
 				{
-					AddInfo(ref CustomMessage,S+" Is Missing!","|");
-				}
+					Material[] M=renderers[i].sharedMaterials;
 
-				continue;
-			}
-
-			GameObject GO5=T.gameObject;
-
-			if(!GO5)
-			{
-				AddInfo(ref CustomMessage,S+" GameObject Is Missing!","|");
-				continue;
-			}
-
-			Component[] components = GO4.GetComponents<Component>();
-
-			foreach (Component C in components)
-			{
-				if(C)
-				{
-					Component[] components2 = GO5.GetComponents<Component>();
-					bool bMissing=true;
-
-					foreach (Component C2 in components2)
+					for (int l = 0; l < M.Length; l++)
 					{
-						if(C2)
+						if(M[l]!=null)
 						{
-							if (C.ToString() == C2.ToString())
+							string S=M[l].name;
+							
+							if(Right(S,Len(" (Instance)"))==" (Instance)")
 							{
-								bMissing=false;
-								break;
+								S=Left(S,Len(S)-Len(" (Instance)"));
+							}
+							
+							if(S==MaterialName)
+							{
+								AddInfo(ref CustomMessage,GetFullPathToObject(GO3,GO),"|");
 							}
 						}
 					}
-
-					if(bMissing)
-					{
-						AddInfo(ref CustomMessage,GetFullPathToObject(GO4,GO2)+": Added Missed Component "+C.ToString(),"|");
-					}
-				}
-			}
-		}
-
-		return true;
-	}
-
-	public bool FindMissingComponents(GameObject GO, GameObject GO2)
-	{
-		if(!GO)
-		{
-			CustomMessage="GameObject Is Null!";
-			return false;
-		}
-
-		if(!GO2)
-		{
-			CustomMessage="GameObject2 Is Null!";
-			return false;
-		}
-
-		CustomMessage="";
-		List<GameObject> GO3=FindGameObjects(GO2);
-
-		foreach(GameObject GO4 in GO3)
-		{
-			string S=GetFullPathToObject(GO4,GO2);
-			Transform T=FindIn(GO,S);
-
-			if(!T)
-			{
-				if(!bSkipMissingGameObjects)
-				{
-					AddInfo(ref CustomMessage,S+" Is Missing!","|");
-				}
-
-				continue;
-			}
-
-			GameObject GO5=T.gameObject;
-
-			if(!GO5)
-			{
-				AddInfo(ref CustomMessage,S+" GameObject Is Missing!","|");
-				continue;
-			}
-
-			Component[] components = GO4.GetComponents<Component>();
-
-			foreach (Component C in components)
-			{
-				Component[] components2 = GO5.GetComponents<Component>();
-				bool bMissing=true;
-
-				foreach (Component C2 in components2)
-				{
-					if (C.ToString() == C2.ToString())
-					{
-						bMissing=false;
-						break;
-					}
-				}
-
-				if(bMissing)
-				{
-					AddInfo(ref CustomMessage,GetFullPathToObject(GO4,GO2)+": Missing Component "+C.ToString(),"|");
 				}
 			}
 		}

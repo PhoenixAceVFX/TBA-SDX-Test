@@ -23,7 +23,7 @@ public class CopyBones : EditorWindow
 	Vector2 MainScroll=Vector2.zero;
 	public List<bool> GUIList_Bool=new List<bool>();
 
-	[MenuItem("Phoenix/Bunny/CopyBones")]
+	[MenuItem("Phoenix/Utilities/CopyBones")]
 	static void Init()
 	{
 		CopyBones window=(CopyBones)EditorWindow.GetWindow(typeof(CopyBones));

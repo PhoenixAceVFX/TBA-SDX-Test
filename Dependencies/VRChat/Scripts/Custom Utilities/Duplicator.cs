@@ -43,7 +43,7 @@ public class Duplicator : EditorWindow
 	public bool bUseFullSearch;
 	Vector2 MainScroll=Vector2.zero;
 
-	[MenuItem("Phoenix/Bunny/Duplicator")]
+	[MenuItem("Phoenix/Utilities/Duplicator")]
 	static void Init()
 	{
 		Duplicator window=(Duplicator)EditorWindow.GetWindow(typeof(Duplicator));

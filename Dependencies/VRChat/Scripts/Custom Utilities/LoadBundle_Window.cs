@@ -47,7 +47,7 @@ public class UnrealLoader : EditorWindow
 
 	public List<AssetInfoStruct> HistoryAssets=new List<AssetInfoStruct>();
 
-	[MenuItem("Phoenix/Bunny/Loader")]
+	[MenuItem("Phoenix/Utilities/Loader")]
 	static void Init()
 	{
 		UnrealLoader window=(UnrealLoader)EditorWindow.GetWindow(typeof(UnrealLoader));

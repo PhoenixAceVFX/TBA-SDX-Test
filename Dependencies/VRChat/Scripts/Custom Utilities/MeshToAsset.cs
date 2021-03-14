@@ -24,7 +24,7 @@ public class MeshToAsset : EditorWindow
 	Vector2 MainScroll=Vector2.zero;
 	public List<bool> GUIList_Bool=new List<bool>();
 
-	[MenuItem("Phoenix/Bunny/MeshToAsset")]
+	[MenuItem("Phoenix/Utilities/MeshToAsset")]
 	static void Init()
 	{
 		MeshToAsset window=(MeshToAsset)EditorWindow.GetWindow(typeof(MeshToAsset));

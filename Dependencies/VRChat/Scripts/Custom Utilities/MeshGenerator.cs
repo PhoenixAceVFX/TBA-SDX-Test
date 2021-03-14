@@ -23,7 +23,7 @@ public class MeshGenerator : EditorWindow
 	Vector2 MainScroll=Vector2.zero;
 	public List<bool> GUIList_Bool=new List<bool>();
 
-	[MenuItem("Phoenix/Bunny/MeshGenerator")]
+	[MenuItem("Phoenix/Utilities/MeshGenerator")]
 	static void Init()
 	{
 		MeshGenerator window=(MeshGenerator)EditorWindow.GetWindow(typeof(MeshGenerator));

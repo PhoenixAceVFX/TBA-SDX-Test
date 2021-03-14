@@ -47,7 +47,7 @@ public class ChangePropertiesOfObject : EditorWindow
 	bool bChangePosition=false,bChangeRotation=false,bChangeScale=false;
 	bool bKeepChildrenPosition=false,bKeepChildrenRotation=false,bKeepChildrenScale=false;
 
-	[MenuItem("Phoenix/Bunny/ChangePropertiesOfObject")]
+	[MenuItem("Phoenix/Utilities/ChangePropertiesOfObject")]
 	static void Init()
 	{
 		ChangePropertiesOfObject window=(ChangePropertiesOfObject)EditorWindow.GetWindow(typeof(ChangePropertiesOfObject));

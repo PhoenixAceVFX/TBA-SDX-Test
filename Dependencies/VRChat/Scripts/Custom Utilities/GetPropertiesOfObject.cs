@@ -23,7 +23,7 @@ public class GetPropertiesOfObject : EditorWindow
 	Vector2 MainScroll=Vector2.zero;
 	public List<bool> GUIList_Bool=new List<bool>();
 
-	[MenuItem("Phoenix/Bunny/GetPropertiesOfObject")]
+	[MenuItem("Phoenix/Utilities/GetPropertiesOfObject")]
 	static void Init()
 	{
 		GetPropertiesOfObject window=(GetPropertiesOfObject)EditorWindow.GetWindow(typeof(GetPropertiesOfObject));
